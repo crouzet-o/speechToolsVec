@@ -1,0 +1,301 @@
+<html>
+
+<head>
+<title>ML 10-8 : Comment charger et sauver des données sous MATLAB </title>
+</head>
+
+<body BGCOLOR="#CCCCCC">
+<!-- barre de la société et boutons : en-tête -->
+<html>
+
+<head>
+<title></title>
+</head>
+
+<body>
+
+<p><a NAME="haut"></a></p>
+<a HREF="/map/entete.map">
+
+<p align="center"><img SRC="../../images/entete.gif" BORDER="0" ISMAP WIDTH="500" HEIGHT="80"></a> </p>
+
+<hr>
+</body>
+</html>
+
+<!-- Titre -->
+
+<p align="center"><u><b><font SIZE="5" COLOR="red">ML 10-8 : Lecture de fichiers de
+données avec en-tête </font></b></u><br>
+</p>
+
+<p align="right"><font size="2">Versions : MATLAB 4.2c, 5</font></p>
+
+<hr>
+
+<p>Dans cet exemple, nous étudions une application courante. Souvent, les données sont
+stockées dans un fichier texte formé d'un en-tête descriptif suivi de colonnes de
+nombres. A cause de la présence de cet en-tête, la commande MATLAB <font COLOR="blue"><tt>load</tt></font>
+n'est pas capable de charger ces fichiers.</p>
+
+<p>Il est toutefois possible d'écrire sa propre fonction pour charger des fichiers de ce
+format.</p>
+
+<h2><font color="#FF0000">I- L'algorithme</font></h2>
+
+<p>Le programme analyse le fichier ligne par ligne, stockant chaque ligne dans une
+variable. Dès qu'il trouve une ligne commençant par un nombre, il arrête de rechercher
+les informations d'en-tête et lit le fichier directement en utilisant <font COLOR="blue"><tt>fscanf</tt></font>.
+A la fin, nous calculons les dimensions des deux sorties, et faisons quelques
+manipulations pour être sûr du format correct de chaque sortie.</p>
+
+<p>Jetez un coup d'&#156;il sur la façon de procéder avec ce fichier très simple,
+appelé <font COLOR="blue"><tt>iotest.dat</tt> : <br>
+</p>
+</font>
+
+<p><tt><font COLOR="blue">Fichier de données avec en-tête<br>
+Créé le 20/08/97 par Scientific Software Group<br>
+1 2 3<br>
+4 5 6</font></tt> 
+
+<ul>
+  <li>Nous étudions la première ligne, et trouvons qu'il n'y a pas de données à lire. Nous
+    stockons ceci dans une variable intermédiaire, <font COLOR="blue"><tt>line1</tt></font> ,
+    de taille (1,31). </li>
+</ul>
+
+<ul>
+  <li>Nous lisons la seconde ligne, et remarquons qu'il n'y a toujours pas de données. Nous
+    stockons ceci dans une seconde variable, <font COLOR="blue"><tt>line2</tt></font> , de
+    taille (1,46). </li>
+</ul>
+
+<ul>
+  <li>Sur la troisième ligne, nous avons quelques données. Nous lisons cette ligne, gardons
+    une trace du nombre de données lues (dans ce cas 3). Nous savons maintenant que notre
+    donnée de sortie sera de format n par 3. </li>
+</ul>
+
+<ul>
+  <li>Maintenant nous nous arrêtons de lire ligne par ligne et lisons le reste des données
+    en une seule fois, stockées dans la variable <font COLOR="blue"><tt>data</tt> </font>. </li>
+</ul>
+
+<ul>
+  <li>A ce niveau nous avons trois variables : <font COLOR="blue"><tt>line1</tt> , <tt>line2</tt>
+    et <tt>data</tt></font> . </li>
+</ul>
+
+<ul>
+  <li>Nous concaténons les deux chaînes, <font COLOR="blue"><tt>line1 </tt></font>et <font
+    COLOR="blue"><tt>line2 </tt></font>, en une seule variable de sortie, <font COLOR="blue"><tt>header</tt></font>
+    , de taille (2,31). </li>
+</ul>
+
+<ul>
+  <li>Finalement, nous reformons la variable <font COLOR="blue"><tt>data</tt></font> à une
+    taille correcte. C'est direct, puisque nous savons qu'il y a trois colonnes, et nous
+    savons que la taille de la variable <font COLOR="blue"><tt>data</tt></font> est (dans ce
+    cas, de six éléments). </li>
+</ul>
+
+<p>Et maintenant voici ce qui arrive lorsque vous chargez ce fichier :</p>
+
+<p><font COLOR="blue"><tt>&gt;&gt; [h, d]=hdrload('iotet.dat') </tt></p>
+
+<p><tt>h=<br>
+Fichier de donnée avec en-tête<br>
+Créé le 20/08/97 par Scientific Software Group<br>
+<br>
+d=<br>
+1 2 3<br>
+4 5 6</tt></p>
+</font>
+
+<h2><font color="#FF0000">II- Le code de la fonction.</font></h2>
+
+<p>Maintenant que nous savons ce que la fonction est supposée faire, nous pouvons montrer
+comment elle est implentée.</p>
+<font COLOR="blue">
+
+<pre>
+</font><font face="Courier New"><font color="#0000FF">function [header, data] = hdrload(file)
+</font><font
+COLOR="blue">
+</font><font color="#FF0000">% HDRLOAD Load data from an ASCII file containing a text header.
+%     [header, data] = HDRLOAD('filename.ext') reads a data file
+%     called 'filename.ext', which contains a text header.  There
+%     is no default extension; any extensions must be explicitly
+%     supplied.
+%
+%     The first output, HEADER, is the header information, returned
+%     as a text array.
+%     The second output, DATA, is the data matrix.  This data matrix
+%     has the same dimensions as the data in the file, one row per
+%     line of ASCII data in the file.  If the data is not regularly
+%     spaced (i.e., each line of ASCII data does not contain the
+%     same number of points), the data is returned as a column
+%     vector.
+%
+%     Limitations:  No line of the text header can begin with
+%     a number.  Only one header and data set will be read,
+%     and the header must come before the data.
+%
+%     See also LOAD, SAVE, SPCONVERT, FSCANF, FPRINTF, STR2MAT.
+%     See also the IOFUN directory.
+
+% check number and type of arguments
+</font><font
+COLOR="blue">
+</font><font color="#0000FF">if nargin &lt;1 error('Function requires one input argument'); 
+elseif ~isstr(file) error('Input argument must be a string representing a filename'); 
+end</font></font></pre>
+
+<p><font face="Courier New"><font COLOR="#ff0000">% Open the file. If this returns a 1, we
+did not open the file <br>
+% successfully.<br>
+</font><font color="#0000FF">fid=&quot;fopen(file);&quot;<br>
+if fid=&quot;=-1&quot; error('File not found or permission denied'); end</font></font></p>
+
+<p><font face="Courier New"><font color="#FF0000">% Initialize loop variables <br>
+% We store the number of lines in the header, and the maximum length <br>
+% of any one line in the header. These are used later in assigning <br>
+% the 'header' output variable.<br>
+</font><font color="#0000FF">no_lines=&quot;0;&quot; max_line=&quot;0;&quot;</font></font></p>
+
+<p><font face="Courier New"><font COLOR="#ff0000">% We also store the number of columns in
+the data we read. This way <br>
+% we can compute the size of the output based on the number of <br>
+% columns and the total number of data points.<br>
+</font><font color="#0000FF">ncols=&quot;0;&quot;</font></font></p>
+
+<p><font face="Courier New"><font COLOR="#ff0000">% Finally, we initialize the data to [].<br>
+</font><font color="#0000FF">data=&quot;[];&quot;</font></font></p>
+
+<p><font face="Courier New"><font COLOR="#ff0000">% Start processing.<br>
+</font><font color="#0000FF">line=&quot;fgetl(fid);&quot; <br>
+if ~isstr(line) disp('Warning: file contains no header and no data') end;<br>
+[data, ncols, errmsg, nxtindex]=&quot;sscanf(line,&quot; '%f'); </font></font></p>
+
+<p><font face="Courier New"><font color="#FF0000">% One slight problem, pointed out by
+Peter vanderWal: If the first <br>
+% character of the line is 'e', then this will scan as 0.00e+00. <br>
+% We can trap this case specifically by using the 'next index' <br>
+% output: in the case of a stripped 'e' the next index is one, <br>
+% indicating zero characters read. See the help entry for 'sscanf' <br>
+% for more information on this output parameter. <br>
+% We loop through the file one line at a time until we find some <br>
+% data. After that point we stop checking for header information. <br>
+% This part of the program takes most of the processing time, because <br>
+% fgetl is relatively slow (compared to fscanf, which we will use <br>
+% later).<br>
+</font><font color="#0000FF">while isempty(data)|(nxtindex=&quot;=1)&quot;
+no_lines=&quot;no_lines+1;&quot;<br>
+max_line=&quot;max([max_line,&quot; length(line)]);</font></font></p>
+
+<p><font face="Courier New"><font COLOR="#ff0000">% Create unique variable to hold this
+line of text information. <br>
+% Store the last-read line in this variable. <br>
+</font><font color="#0000FF">eval(['line', num2str(no_lines), '=&quot;line;']);&quot; <br>
+line=&quot;fgetl(fid);&quot; <br>
+if ~isstr(line) disp('Warning: file contains no data') break end; <br>
+[data, ncols, errmsg, nxtindex]=&quot;sscanf(line,&quot; '%f');<br>
+end </font></font></p>
+
+<p><font face="Courier New"><font color="#FF0000">% while <br>
+% Now that we have read in the first line of data, we can skip the <br>
+% processing that stores header information, and just read in the<br>
+% rest of the data.<br>
+</font><font color="#0000FF">data=&quot;[data;&quot;fscanf(fid, '%f')];<br>
+fclose(fid);</font></font></p>
+
+<p><font face="Courier New"><font color="#FF0000">% Create header output from line
+information. The number of lines and<br>
+% the maximum line length are stored explicitly, and each line is<br>
+% stored in a unique variable using the 'eval' statement within the<br>
+% loop. Note that, if we knew a priori that the headers were 10 lines<br>
+% or less, we could use the STR2MAT function and save some work.<br>
+% First, initialize the header to an array of spaces.<br>
+</font><font color="#0000FF">header=&quot;setstr('&quot; '*ones(no_lines, max_line));<br>
+for i=&quot;1:no_lines&quot; varname=&quot;['line'&quot; num2str(i)];</font></font></p>
+
+<p><font face="Courier New"><font COLOR="#ff0000">% Note that we only assign this line
+variable to a subset of this<br>
+% row of the header array. We thus ensure that the matrix sizes in <br>
+% the assignment are equal.<br>
+</font><font color="#0000FF">eval(['header(i, 1:length(' varname '))=&quot; varname &quot;
+;']); end</font></font></p>
+
+<p><font face="Courier New"><font COLOR="#ff0000">% Resize output data, based on the
+number of columns (as returned <br>
+% from the sscanf of the first line of data) and the total number of <br>
+% data elements. Since the data was read in row-wise, and MATLAB <br>
+% stores data in columnwise format, we have to reverse the size <br>
+% arguments and then transpose the data. If we read in irregularly <br>
+% spaced data, then the division we are about to do will not work. <br>
+% Therefore, we will trap the error with an EVAL call; if the reshape <br>
+% fails, we will just return the data as is.<br>
+</font><font color="#0000FF">eval('data=&quot;reshape(data,&quot; ncols,
+length(data)/ncols)'';', '');</font></font></p>
+
+<p><font face="Courier New"><font color="#FF0000">% And we're done</font><br>
+<br>
+</font><font COLOR="#0000ff"></p>
+</font>
+
+<form ACTION="/cgi-bin/support" METHOD="POST">
+  <input type="hidden" name="Note Technique "
+  value="ML 10-8 : Comment charger et sauver des données sous 
+MATLAB"><div align="center"><center><table
+  border="1" cellspacing="0" cellpadding="0" width="619">
+    <tr>
+      <td valign="top" width="262"><b><font SIZE="2">Est-ce que cette note répond à vos
+      attentes ?</font></b></td>
+      <td width="50" valign="top"><font SIZE="-1">Oui<input TYPE="radio" NAME="Reponse"
+      VALUE="oui"></font></td>
+      <td width="301" valign="top"><font size="-1">Non<input TYPE="radio" NAME="Reponse"
+      VALUE="non"><br>
+      Si vous répondez &quot;non&quot;, merci de justifier votre réponse et d'indiquer
+      éventuellement votre adresse Email afin que l'on puisse vous répondre</font></td>
+    </tr>
+    <tr>
+      <td colspan="3" width="617"><div align="center"><center><p><font SIZE="2"><b>Commentaires
+      et suggestions:</b><br>
+      </font><textarea NAME="Remarques" ROWS="2" COLS="43" WRAP="PHYSICAL"></textarea> <input
+      TYPE="submit" VALUE="ENVOYER"></td>
+    </tr>
+  </table>
+  </center></div>
+</form>
+<font SIZE="2">
+
+<p align="center">Date de création : 01/09/97</font><br>
+<!-- Pied de page -->
+<center>
+<hr>
+<table>
+<tr>
+<td WIDTH="50">
+<a HREF="#haut&quot;"><img SRC="../../images/flec_hau.gif" BORDER="0" WIDTH="31" HEIGHT="31"></a>
+</td>
+<td>
+<font SIZE="2">
+<a HREF="../techformulaire.html">Fiche technique</a> | 
+<a HREF="../notetech.html">Notes techniques</a> | 
+<a HREF="../../tmw/produits/index.html">Produits MATLAB</a> | 
+<a HREF="../../dspace/produits/prod_dsp.html">Produits dSPACE</a> | 
+<a HREF="../../techniqu.html">Service Technique</a> | 
+<a HREF="../../versions.html">Versions</a>
+</font>
+</td>
+</table>
+<font size="2">
+Questions ou commentaires sur ce service? <i>
+<a href="mailto:webmaster@ssg.fr">webmaster@ssg.fr</a><br>
+</i></font><br> 
+</center><br>
+<br>
+</p>
+</body>
+</html>

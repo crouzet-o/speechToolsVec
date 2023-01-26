@@ -1,0 +1,129 @@
+<html>
+
+<head>
+<title>ML 30-3 : Comment placer des labels verticaux sur l'axe des X ?</title>
+</head>
+
+<body BGCOLOR="#CCCCCC">
+<!-- barre de la société et boutons : en-tête -->
+<html>
+
+<head>
+<title></title>
+</head>
+
+<body>
+
+<p><a NAME="haut"></a></p>
+<a HREF="/map/entete.map">
+
+<p align="center"><img SRC="../../images/entete.gif" BORDER="0" ISMAP WIDTH="500" HEIGHT="80"></a> </p>
+
+<hr>
+</body>
+</html>
+
+<!-- Titre -->
+
+<p align="center"><u><b><font SIZE="5" COLOR="red">ML 30-3 : Comment placer des labels
+verticaux sur l'axe des X ?</font></b></u></p>
+<div align="right">
+
+<table border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td><font size="2">Versions : MATLAB 5.2 <br>
+    Plates-formes : toutes</font></td>
+  </tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Question</h2>
+
+<p>Voici un exemple montrant comment faire pivoter les étiquettes de l'axe des abscisses.
+</p>
+
+<h2>Réponse</h2>
+
+<pre>
+% Création des données
+X = 1:12;
+Y = rand(1,12);
+
+% Génération d'un tracé
+bar(X,Y);
+
+% Positionnement des tirets sur les axes et suppression 
+% des étiquettes
+set(gca,'XTick',1:12,'XTickLabel','')
+
+% Définition des étiquettes
+lab = ['Jan';'Feb';'Mar';'Apr';'May';'Jun';
+       'Jul';'Aug';'Sep';'Oct';'Nov';'Dec'];
+
+% Estimation de la position des étiquettes en se basant 
+% sur la position des xlabel
+hx = get(gca,'XLabel');  % Handle to xlabel
+set(hx,'Units','data');
+pos = get(hx,'Position');
+y = pos(2);
+
+% Positionnement des nouvelles étiquettes
+for i = 1:size(lab,1)
+  t(i) = text(i,y,lab(i,:));
+end
+set(t,'Rotation',90,'HorizontalAlignment','right')
+
+</pre>
+
+<p align="center"><img SRC="images/ml3031.gif" BORDER="0" WIDTH="576" HEIGHT="474"> <br>
+<br>
+<br>
+</p>
+
+<form ACTION="/cgi-bin/support" METHOD="POST">
+  <input type="hidden" name="Note Technique " value="ML 30-3 : Comment placer des labels verticaux sur l'axe des X "><div align="center"><center><table border="1" cellspacing="0" cellpadding="0" width="657">
+    <tr>
+      <td width="265" valign="top"><b><font size="2">Est-ce que cette note répond à vos
+      attentes ?</font></b></td>
+      <td width="67" valign="top"><font SIZE="-1">Oui<input TYPE="radio" NAME="Reponse" VALUE="oui"></font></td>
+      <td width="319" valign="top"><font size="-1">Non<input TYPE="radio" NAME="Reponse" VALUE="non"><br>
+      Si vous répondez &quot;non&quot;, merci de justifier votre réponse et d'indiquer
+      éventuellement votre adresse Email afin que l'on puisse vous répondre</font></td>
+    </tr>
+    <tr>
+      <td colspan="3" width="655"><div align="center"><center><p><font size="2"><b>Commentaires
+      et suggestions:</b><br>
+      </font><textarea NAME="Remarques" ROWS="2" COLS="43" WRAP="PHYSICAL"></textarea> <input TYPE="submit" VALUE="ENVOYER"></td>
+    </tr>
+  </table>
+  </center></div>
+</form>
+
+<p align="center"><font size="2">Date de création : 15/07/98 </font><!-- Pied de page -->
+<center>
+<hr>
+<table>
+<tr>
+<td WIDTH="50">
+<a HREF="#haut&quot;"><img SRC="../../images/flec_hau.gif" BORDER="0" WIDTH="31" HEIGHT="31"></a>
+</td>
+<td>
+<font SIZE="2">
+<a HREF="../techformulaire.html">Fiche technique</a> | 
+<a HREF="../notetech.html">Notes techniques</a> | 
+<a HREF="../../tmw/produits/index.html">Produits MATLAB</a> | 
+<a HREF="../../dspace/produits/prod_dsp.html">Produits dSPACE</a> | 
+<a HREF="../../techniqu.html">Service Technique</a> | 
+<a HREF="../../versions.html">Versions</a>
+</font>
+</td>
+</table>
+<font size="2">
+Questions ou commentaires sur ce service? <i>
+<a href="mailto:webmaster@ssg.fr">webmaster@ssg.fr</a><br>
+</i></font><br> 
+</center> </p>
+</body>
+</html>

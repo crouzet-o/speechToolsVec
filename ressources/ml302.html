@@ -1,0 +1,228 @@
+<html>
+
+<head>
+<title>ML 30-2 : comment créer des lignes paramétriques dégradées ?</title>
+</head>
+
+<body BGCOLOR="#CCCCCC">
+<!-- barre de la société et boutons : en-tête -->
+<html>
+
+<head>
+<title></title>
+</head>
+
+<body>
+
+<p><a NAME="haut"></a></p>
+<a HREF="/map/entete.map">
+
+<p align="center"><img SRC="../../images/entete.gif" BORDER="0" ISMAP WIDTH="500" HEIGHT="80"></a> </p>
+
+<hr>
+</body>
+</html>
+
+<!-- Titre -->
+
+<p align="center"><font SIZE="5" COLOR="red"><u><b>ML 30-2 : Comment créer des lignes
+paramétriques dégradées ?</b></u></font></p>
+<div align="right">
+
+<table border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td><font size="2">Versions : MATLAB 5.0<br>
+    Plates-formes : toutes</font></td>
+  </tr>
+</table>
+</div>
+
+<hr>
+
+<h2>Question :</h2>
+
+<p>Comment générer une ligne 2D ou 3D dont l'amplitude est représentée par les
+couleurs ? </p>
+
+<h2>Réponse</h2>
+
+<p>Il est possible de le faire en utilisant la commande <i>mesh</i>. En transformant x, y
+et/ou z en un tableau 2xN dont la première ligne égale la seconde, il est possible
+d'utiliser <i>mesh</i> pour tracer une ligne dégradée. Par exemple : </p>
+
+<pre>
+               % Données originales
+               x = 0:pi/5:2*pi; 
+               y = sin(x); 
+               % Conversion de x et y en tableau 2xN 
+               X = [x;x]; 
+               Y = [y;y]; 
+               % Génération de la ligne dégradée 
+               mesh(X,Y,zeros(size(X)),Y) 
+               view(2) 
+</pre>
+
+<p align="center"><img SRC="images/ml3021.gif" WIDTH="300" HEIGHT="300"> </p>
+
+<p>Dans cet exemple, une sinusoïde colorée est créée. Les 2 premiers arguments
+d'entrée du <i>mesh</i> sont les valeurs X et Y. La 3ème entrée est la valeur Z. Si
+c'est un tracé 2D, la donnée en Z est mise à 0. L'entrée finale est la valeur des
+couleurs. Si Y représente l'amplitude, mettre les valeurs des couleurs dans Y. Ne pas
+oublier que, par défaut, si les valeurs des couleurs ne sont pas données, elles
+correspondent par défaut aux données Z. Comme les données Z sont toutes égales à 0,
+il faut spécifier les valeurs des couleurs. Pour un tracé 3D, il n'est pas nécessaire
+de spécifier les valeurs des couleurs. </p>
+
+<p>Vous trouverez ci-dessous un fichier .m qui combine toutes ces étapes dans un seul
+fichier. Il supporte à la fois des cas 2D et 3D. En utilisant les valeurs de x et y de
+l'exemple précédent, il est possible de créer le même tracé avec la commande suivante
+: </p>
+
+<pre>
+               plotcol(x,y) 
+</pre>
+
+<p>Comme vous pouvez le constater, il est plus facile de taper simplement cette ligne. <br>
+<br>
+<br>
+</p>
+
+<pre>
+               function handle = plotcol(x,y,z,c,linestyle); 
+               % PLOTCOL cree un trace qui utilise la palette 
+	       % de couleurs
+               % 
+               % PLOTCOL(X,Y,Z,C,LINESTYLE) trace une ligne
+	       % parametrique coloree basee sur X, Y, Z et C
+               % en utilisant le style de ligne de LINESTYLE
+               % La graduation des couleurs est determinee par
+	       % les valeurs de C ou par les valeurs actuelles
+	       % de CAXIS.
+               % Les valeurs des couleurs graduees sont utilisees
+	       % comme indices dans la COLORMAP actuelle
+               % 
+               % N'importe quelle combinaison d'entrees peut etre 
+	       % utilisee. Si C n'est pas donne, il est affecte a
+	       % Z, Y ou X selon l'argument d'entree.
+               % Ci-dessous se trouve un tableau qui decrit ceci :
+               % 
+               % Valeur donnee de C 
+               % X,Y,Z Z 
+               % X,Y Y 
+               % X X 
+               % 
+               % SEE ALSO: mesh 
+               if nargin == 0;error('Requires at least one input');end 
+               % Determine quels arguments d'entree sont donnes : 
+               if nargin == 1; % Trace 2-D, X est donne. 
+               [m,n] = size(x); 
+               y = [x;x]; 
+               x = [1:n;1:n]; 
+               z = zeros(2,n); 
+               c = y; 
+               linestyle = '-'; 
+               elseif nargin == 2; % Trace 2-D, X et Y, C, 
+               %ou LINESTYLE sont donnes 
+               [m,n] = size(x); 
+               z = zeros(2,n) 
+               if isstr(y) % X et LINESTYLE donnes. 
+               y = [x;x]; 
+               x = [1:n,1:n]; 
+               else % X et Y donnes. 
+               x = [x;x]; 
+               y = [y;y]; 
+               linestyle = '-'; 
+               end 
+               c = y; 
+               elseif nargin == 3; % X, Y, et Z, ou 
+               %LINESTYLE donnes. 
+               [m,n] = size(x); 
+               x = [x;x]; 
+               y = [y;y]; 
+               if ~isstr(z) % X, Y, et Z donnes 
+               z = [z;z]; 
+               c = z; 
+               linestyle = '-'; 
+               else % X, Y, et LINESTYLE 
+               % donnes 
+               linestyle = z; 
+               z = zeros(2,n); 
+               c = y; 
+               end 
+               elseif nargin == 4 % X, Y,  et Z, C, ou 
+               % LINESTYLE donnes. 
+               [m,n] = size(x); 
+               x = [x;x]; 
+               y = [y;y]; 
+               if isstr(c) % Trace 2-D avec X, Y, 
+               % C, et LINESTYLE 
+               linestyle = c; 
+               c = z; 
+               z = zeros(2,n); 
+               else % Trace 3-D avec X, Y, 
+               % Z, et C ou LINESTYLE 
+               linestyle = '-'; 
+               z = [z;z]; 
+               c = [c;c]; 
+               end 
+               elseif nargin == 5 % Tout est donne. 
+               [m,n] = size(x); 
+               x = [x;x]; 
+               y = [y;y]; 
+               z = [z;z]; 
+               c = [c;c]; 
+               end 
+               h = mesh(x,y,z,c); 
+               set(h,'LineStyle',linestyle); 
+               if all(z == 0), view(2), end 
+               if nargout == 1 
+               handle = h; 
+               end 
+
+</pre>
+
+<form ACTION="/cgi-bin/support" METHOD="POST">
+  <input type="hidden" name="Note Technique " value="ML 30-2 : Comment créer des lignes parametriques degradees ?"><div align="center"><center><table border="1" cellspacing="0" cellpadding="0" width="657">
+    <tr>
+      <td width="265" valign="top"><b><font size="2">Est-ce que cette note répond à vos
+      attentes ?</font></b></td>
+      <td width="67" valign="top"><font SIZE="-1">Oui<input TYPE="radio" NAME="Reponse" VALUE="oui"></font></td>
+      <td width="319" valign="top"><font size="-1">Non<input TYPE="radio" NAME="Reponse" VALUE="non"><br>
+      Si vous répondez &quot;non&quot;, merci de justifier votre réponse et d'indiquer
+      éventuellement votre adresse Email afin que l'on puisse vous répondre</font></td>
+    </tr>
+    <tr>
+      <td colspan="3" width="655"><div align="center"><center><p><font size="2"><b>Commentaires
+      et suggestions:</b><br>
+      </font><textarea NAME="Remarques" ROWS="2" COLS="43" WRAP="PHYSICAL"></textarea> <input TYPE="submit" VALUE="ENVOYER"></td>
+    </tr>
+  </table>
+  </center></div>
+</form>
+
+<p align="center"><font size="2">Date de création : 17/02/98 </font><!-- Pied de page -->
+<center>
+<hr>
+<table>
+<tr>
+<td WIDTH="50">
+<a HREF="#haut&quot;"><img SRC="../../images/flec_hau.gif" BORDER="0" WIDTH="31" HEIGHT="31"></a>
+</td>
+<td>
+<font SIZE="2">
+<a HREF="../techformulaire.html">Fiche technique</a> | 
+<a HREF="../notetech.html">Notes techniques</a> | 
+<a HREF="../../tmw/produits/index.html">Produits MATLAB</a> | 
+<a HREF="../../dspace/produits/prod_dsp.html">Produits dSPACE</a> | 
+<a HREF="../../techniqu.html">Service Technique</a> | 
+<a HREF="../../versions.html">Versions</a>
+</font>
+</td>
+</table>
+<font size="2">
+Questions ou commentaires sur ce service? <i>
+<a href="mailto:webmaster@ssg.fr">webmaster@ssg.fr</a><br>
+</i></font><br> 
+</center> </p>
+</body>
+</html>

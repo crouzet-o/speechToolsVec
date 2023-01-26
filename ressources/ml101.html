@@ -1,0 +1,126 @@
+<html>
+
+<head>
+<title>ML 10-1 : Déplacement de marqueurs à l'aide de la souris</title>
+</head>
+
+<body BGCOLOR="#CCCCCC">
+<!-- barre de la société et boutons : en-tête -->
+<html>
+
+<head>
+<title></title>
+</head>
+
+<body>
+
+<p><a NAME="haut"></a></p>
+<a HREF="/map/entete.map">
+
+<p align="center"><img SRC="../../images/entete.gif" BORDER="0" ISMAP WIDTH="500" HEIGHT="80"></a> </p>
+
+<hr>
+</body>
+</html>
+
+<!-- Titre -->
+
+<p align="center"><font size="5" color="red"><u><b>ML 10-1 : Déplacement de marqueurs
+PLOT<br>
+à l'aide de la souris dans une fenêtre MATLAB</b></u></font></p>
+
+<p align="right"><font size="2">Versions : MATLAB 4.2c, 5.0, 5.2</font></p>
+
+<hr>
+<!-- Titre de paragraphe -->
+
+<h2><font color="#FF0000">Programme MATLAB : DEPLMARK.M </font></h2>
+
+<p>close<br>
+clear<br>
+axis([0 100 0 100])<br>
+<br>
+% Deplacement du point<br>
+cmd1 = [ ...<br>
+'pos=get(gca,''currentpoint'');' ...<br>
+'set(gco,''xdata'',pos(1,1),''ydata'',pos(1,2));' ...<br>
+];<br>
+<br>
+% Reset des callback de la fenetre graphique<br>
+cmd2 = [ ...<br>
+'set(gcf,''windowbuttonmotionfcn'','''');' ...<br>
+'set(gcf,''windowbuttonupfcn'','''');' ...<br>
+];<br>
+<br>
+% Affectation des callback de la fenetre graphique<br>
+cmd3 = [ ...<br>
+'set(gcf,''windowbuttonmotionfcn'',cmd1);' ...<br>
+'set(gcf,''windowbuttonupfcn'',cmd2);' ...<br>
+];<br>
+<br>
+% Affichage des points<br>
+hold on<br>
+for i =1:10:100<br>
+plot(i,i,'.','markersize',20,'erasemode','xor','buttondownfcn',cmd3); <br>
+end<br>
+<br>
+</p>
+
+<p>Dans MATLAB, lancez le programme :<br>
+</p>
+
+<pre>
+<tt>&gt;&gt; deplmark
+</tt>
+</pre>
+
+<p align="center"><img SRC="images/matlab21.gif" WIDTH="400" HEIGHT="300"> <br>
+<br>
+<br>
+<!-- Question pour savoir si la note technique correspond a ce que le client recherche --></p>
+
+<form ACTION="/cgi-bin/support" METHOD="POST">
+  <input type="hidden" name="Note Technique " value="ML 10-1 : Déplacement de marqueurs à l'aide de la souris"><div align="center"><center><table border="1" cellspacing="0" cellpadding="0" width="612">
+    <tr>
+      <td valign="top" width="260"><b><font size="2">Est-ce que cette note répond à vos
+      attentes ?</font></b></td>
+      <td valign="top" width="46"><font SIZE="-1">Oui<input TYPE="radio" NAME="Reponse" VALUE="oui"></font></td>
+      <td valign="middle" width="300"><font SIZE="-1">Non<input TYPE="radio" NAME="Reponse" VALUE="non"><br>
+      Si vous répondez &quot;non&quot;, merci de justifier votre réponse et d'indiquer
+      éventuellement votre adresse Email afin que l'on puisse vous répondre</font></td>
+    </tr>
+    <tr>
+      <td colspan="3" width="610"><div align="center"><center><p><font size="2"><b>Commentaires
+      et suggestions:</b><br>
+      </font><textarea NAME="Remarques" ROWS="2" COLS="43" WRAP="PHYSICAL"></textarea><input TYPE="submit" VALUE="ENVOYER"></td>
+    </tr>
+  </table>
+  </center></div>
+</form>
+
+<p align="center"><font size="2">Date de création : 30/08/96 </font><!-- Pied de page -->
+<center>
+<hr>
+<table>
+<tr>
+<td WIDTH="50">
+<a HREF="#haut&quot;"><img SRC="../../images/flec_hau.gif" BORDER="0" WIDTH="31" HEIGHT="31"></a>
+</td>
+<td>
+<font SIZE="2">
+<a HREF="../techformulaire.html">Fiche technique</a> | 
+<a HREF="../notetech.html">Notes techniques</a> | 
+<a HREF="../../tmw/produits/index.html">Produits MATLAB</a> | 
+<a HREF="../../dspace/produits/prod_dsp.html">Produits dSPACE</a> | 
+<a HREF="../../techniqu.html">Service Technique</a> | 
+<a HREF="../../versions.html">Versions</a>
+</font>
+</td>
+</table>
+<font size="2">
+Questions ou commentaires sur ce service? <i>
+<a href="mailto:webmaster@ssg.fr">webmaster@ssg.fr</a><br>
+</i></font><br> 
+</center> </p>
+</body>
+</html>

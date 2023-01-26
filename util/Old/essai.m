@@ -1,0 +1,9 @@
+addnoise('speech.sig','temp/noise1.sig',-10);
+addnoise('speech.sig','temp/noise2.sig',-10);
+addnoise('speech.sig','temp/noise3.sig',-10);
+addnoise('speech.sig','temp/noise4.sig',-10);
+addnoise('speech.sig','temp/noise5.sig',-10);
+addnoise('speech.sig','temp/noise6.sig',-10);
+addnoise('speech.sig','temp/noise7.sig',-10);
+addnoise('speech.sig','temp/noise8.sig',-10);
+addnoise('speech.sig','temp/noise9.sig',-10);

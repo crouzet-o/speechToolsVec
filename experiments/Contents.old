@@ -1,0 +1,4 @@
+%  Copyright Olivier Crouzet. 
+% 
+%   test_envelope_callbacks - DATA_VALUE_STORED;
+%   band_r                  - Compute envelope amplitude correlation between spectral channels

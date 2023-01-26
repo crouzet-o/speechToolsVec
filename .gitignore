@@ -1,0 +1,67 @@
+
+# FMA music library
+fma/
+
+# Linked stored files (OSF, zenodo...)
+OSF/
+zenodo/
+sound/
+
+# Files to organize
+TEMP/
+
+# Confidential data
+budget/
+*private/
+*.priv.md
+
+# Data files (storage on OSF only)
+00_data/
+data/
+DATA/
+.wav
+
+# Misc specific files
+notesFilters.m
+test/
+old/
+cache/
+auto/
+.RData
+.Rhistory
+tmp.*
+.DS_Store
+
+# test files and directories
+test*
+
+# Potentially big files
+.mat
+
+# temp files
+*.tmp
+
+# backup files
+*.bak
+*.*~
+*.swp
+.#*
+*#
+
+# TeX temporary files
+*.orig
+*.aux
+*.bcf
+*.blg
+*.nav
+*.out
+*.run
+*.snm
+*.toc
+*.vrb
+*.run.xml
+missfont.log
+
+# Matlab .asv files (?)
+*.asv
+
